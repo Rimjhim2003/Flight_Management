@@ -1,43 +1,40 @@
 package com.coforge.training.flightmanagement.controller;
 
-import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import com.coforge.training.flightmanagement.dto.FlightRequest;
 import com.coforge.training.flightmanagement.model.Flight;
 import com.coforge.training.flightmanagement.service.FlightService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/flights")
+
 public class FlightController {
-
-	private final FlightService flightService;
-
-	public FlightController(FlightService flightService) {
-		this.flightService = flightService;
-	}
-
-	// View all flights
-	@GetMapping
-	public List<Flight> getFlights() {
-		return flightService.getAllFlights();
-	}
-
-	// Delete flight by ID
-	@DeleteMapping("/{id}")
-	public String deleteFlight(@PathVariable Long id) {
-		flightService.deleteFlight(id);
-		return "Flight with ID " + id + " deleted successfully";
-	}
 	
-	@PostMapping
-	public Flight createFlight(@RequestBody Flight flight) {
-	    return flightService.addFlight(flight);
-	}
+	@Autowired
+    private FlightService flightService;
+
+    @PostMapping
+    public Flight createFlight(@RequestBody FlightRequest flightRequest) {
+        return flightService.saveFlight(flightRequest);
+    }
+
+    @GetMapping
+    public List<Flight> getAllFlights() {
+        return flightService.getAllFlights();
+    }
+
+    @GetMapping("/{id}")
+    public Flight getFlight(@PathVariable Long id) {
+        return flightService.getFlightById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFlight(@PathVariable Long id) {
+        flightService.deleteFlight(id);
+    }
 }
